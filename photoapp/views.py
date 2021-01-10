@@ -1,6 +1,6 @@
-from django.shortcuts import HttpResponse
+from django.shortcuts import render
 
 def welcome(request):
-    return HttpResponse('Welcome to the Photoapp')
+    return render(request,'welcome.html')
 
 # Create your views here.

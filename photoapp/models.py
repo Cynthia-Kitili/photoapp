@@ -38,4 +38,23 @@ class Image(models.Model):
     @classmethod
     def filter_by_location(cls, id):
        images = Image.objects.filter(location_id=id)
-       return images  
+       return images 
+
+class Category(models.Model):
+    photo_category = models.CharField(max_length =30)
+
+    def save_category(self):
+        self.save()
+
+    def delete_category(self):
+        self.delete()
+    
+    def update_category(self, update):
+        self.photo_category = update
+        self.save()
+    def get_category_id(cls,id):
+        category = Category.object.get(pk = id)
+        return category
+
+    def __str__(self):
+        return self.photo_category         

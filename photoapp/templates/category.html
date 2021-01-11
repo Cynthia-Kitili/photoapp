@@ -1,3 +1,54 @@
-{% extends 'all-photo/base.html' %}
+{% extends 'all-photos/base.html' %}
 {% block content %}
-{% endblock %}
+<body>
+{% for photo_item in images %}
+<div class="container-fluid" id="container">   
+              <div id="image" class="p-1">
+                <div id="front" class="zoom">
+                  <div class="overlay">
+    <div class="col-md-4 col-md-4 col-md-4">
+      <!-- <h1 class="">{{photo_item}}</h1> -->
+      <div class="well">
+      <img src="{{photo_item.image.url}}" style="width: 100%" class="image" data-toggle="modal" data-target="#exampleModal{{photo_item.id}}"class="img-responsive" alt="Image" style="max-width:300px;">
+      </div>
+    </div>
+                  </div>
+                </div>  
+              </div>        
+  {% endfor %}
+
+
+<!--  modal -->
+{% for photo_item in images %}
+<div class="modal fade"  id="exampleModal{{photo_item.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLongTitle">{{photo_item.name }}</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+     </div>
+    <div class="modal-body">
+      <img src="{{photo_item.image.url}}" class="img-fluid" data-toggle="modal" data-target="#exampleModal{{image.id}}" style="width: 100%;">
+      <p> {{photo_item.description }}</p><label for="location"> Image location :{{photo_item.location }}</label>
+
+
+    </div>
+    <div class="modal-footer">
+      <input class="form-control" type="text" value="http://127.0.0.1:8000{{photo_item.image.url}}" id="thislinkhere-{{photo_item.id}}">
+      <a onclick="copyLink({{photo_item.id}})"><button type="button" class="btn btn-outline-secondary my-2 my-sm-0 link-btn">Copy
+          image Link</button></a>
+
+    </div>
+    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+
+  </div>
+</div>
+</div>
+</div>
+</body>
+
+
+{% endfor %}
+  {% endblock %}

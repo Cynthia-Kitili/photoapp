@@ -1,3 +1,41 @@
 from django.db import models
 
 # Create your models here.
+class Image(models.Model):
+    title = models.CharField(max_length =30)
+    photographer = models.ForeignKey(Photographer)
+    description = models.TextField(max_length =30)
+    image = models.ImageField(upload_to = 'photos/', default='No image')
+    location = models.ForeignKey(Location)
+    category = models.ForeignKey(Category)
+    pub_date = models.DateTimeField(auto_now_add=True, null=True) 
+
+    class Meta:
+        ordering = ('-id',)
+
+    def save_image(self):
+        self.save()
+    def delete_image(self):
+        self.delete()
+
+    def __str__(self):
+        return self.title    
+    classmethod
+    def get_all_images(cls):
+        all_images = Image.objects.all()
+        return all_images
+    
+    @classmethod
+    def get_image_by_id(cls, id):
+        an_image = Image.objects.get(id=id)
+        return an_image    
+
+
+    @classmethod
+    def search_by_category(cls,search_term):
+        photo = cls.objects.filter(category__photo_category__icontains=search_term)
+        return photo_category        
+    @classmethod
+    def filter_by_location(cls, id):
+       images = Image.objects.filter(location_id=id)
+       return images  

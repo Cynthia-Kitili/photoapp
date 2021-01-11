@@ -4,16 +4,6 @@ from django.shortcuts import render
 def welcome(request):
     return render(request,'welcome.html')
 
-def food(request):
-    # date = dt.date.today()
-    return render(request, 'all-news/food.html')
-def sports(request):
-    # date = dt.date.today()
-    return render(request, 'all-news/sports.html')
-def tech(request):
-    # date = dt.date.today()
-    return render(request, 'all-news/tech.html')
-
-def travel(request):
-    # date = dt.date.today()
-    return render(request, 'all-news/travel.html')    
+def category(request):
+    images = Image.objects.all()
+    return render(request, 'category.html',{'images':images})

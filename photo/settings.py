@@ -42,6 +42,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'photoapp',
     'bootstrap3',
+    'cloudinary',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -175,7 +176,7 @@ django_on_heroku.settings(locals())
 
 
 cloudinary.config( 
-    cloud_name="dwlokkcg9",
-    api_key="523765484763355",
-    api_secret="GdQUk6wJGbMSAkzyU4JUGQi_b9M"
+    cloud_name="dtmxohrtu",
+    api_key="156378187694462",
+    api_secret="tp62VgeaOx2P2aT7RqK9d4iukT0"
 )

@@ -1,4 +1,7 @@
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 """
 Django settings for photo project.
 
@@ -72,6 +75,10 @@ TEMPLATES = [
 ]
 
 
+
+
+
+
 WSGI_APPLICATION = 'photo.wsgi.application'
 
 
@@ -130,3 +137,8 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+cloudinary.config( 
+    cloud_name="dwlokkcg9",
+    api_key="523765484763355",
+    api_secret="GdQUk6wJGbMSAkzyU4JUGQi_b9M"
+)

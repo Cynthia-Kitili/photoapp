@@ -1,131 +1,91 @@
 from django.test import TestCase
-from .models import Photographer,Location,Image,Category
-import datetime as dt
+from .models import Image, Category, Location
 
 # Create your tests here.
-class PhotographerTestClass(TestCase):
-
-    # Set up method
+class TestImage(TestCase):
     def setUp(self):
-        self.hannah= Photographer(first_name = 'Hannah', last_name ='Njeri')
-    # Testing  instance
-    def test_instance(self):
-        self.assertTrue(isinstance(self.hannah,Photographer))   
-    # Testing Save Method
-    def test_save_method(self):
-        self.hannah.save_photographer()
-        photographers = Photographer.objects.all()
-        self.assertTrue(len(photographers) > 0) 
-    def test_delete_method(self):
-        self.hannah.save_photographer()
-        self.hannah.delete_photographer()
-        photographers = Photographer.objects.all()
-        self.assertTrue(len(photographers) == 0) 
-    def test_display_method(self):
-        self.hannah.save_photographer()
-        self.hannah.display_photographers()
-        photographers = Photographer.objects.all()
-        self.assertTrue(len(photographers) > 0) 
-    def test_update_method(self):
-        self.hannah.save_photographer()
-        new_photographer = Photographer.objects.filter(first_name="Hannah").update(first_name="mercy")
-        photographers=Photographer.objects.get(first_name="mercy")
-        self.assertTrue(photographers.first_name,"mercy")           
+        self.location = Location(name='India')
+        self.location.save_location()
 
-class LocationTestClass(TestCase):
-    def setUp(self):
-        self.nairobi = Location(photo_location='Kenya')
-        self.nairobi.save_location()
+        self.category = Category(name='home')
+        self.category.save_category()
+
+        self.image_test = Image(id=1, name='image', description='image test', location=self.location,
+                                category=self.category)
 
     def test_instance(self):
-        self.assertTrue(isinstance(self.nairobi,Location))
+        self.assertTrue(isinstance(self.image_test, Image))
+
+    def test_save_image(self):
+        self.image_test.save_image()
+        after = Image.objects.all()
+        self.assertTrue(len(after) > 0)
+
     
-    def test_updating_location(self):
-        location = Location.get_location_id(self.nairobi.id)
-        location.update_location('Italy')
-        location = Location.get_location_id(self.nairobi.id)
-        self.assertTrue(location.photo_location == 'Italy')
-    
+    def test_get_image_by_id(self):
+        found_image = self.image_test.get_image_by_id(self.image_test.id)
+        image = Image.objects.filter(id=self.image_test.id)
+        self.assertTrue(found_image, image)
+
+    def test_delete_image(self):
+        self.image_test.delete_image()
+        images = Image.objects.all()
+        self.assertTrue(len(images) == 0)
+
     def tearDown(self):
-        self.nairobi.delete_location() 
+        Image.objects.all().delete()
+        Location.objects.all().delete()
+        Category.objects.all().delete()
+
+    def test_search_image_by_location(self):
+        self.image_test.save_image()
+        found_images = self.image_test.filter_by_location(location='india')
+        self.assertTrue(len(found_images) < 1)
+
+    
+    def test_search_image_by_category(self):
+        category = 'home'
+        found_img = self.image_test.search_by_category(category)
+        self.assertTrue(len(found_img) < 1)
+
+
 class CategoryTestClass(TestCase):
     def setUp(self):
-        self.ladieswear = Category(photo_category='Menswear')
-        self.ladieswear.save_category()
+        self.category = Category(name='home')
+        self.category.save_category()
 
     def test_instance(self):
-        self.assertTrue(isinstance(self.ladieswear,Category))
-    
-    def tearDown(self):
-        self.ladieswear.delete_category()
-    
-    
-class ImageTestClass(TestCase):
-   """
-   Tests Image class and its functions
-   """
-   #Set up method
-   def setUp(self):
-        self.menswear = Category(photo_category='Menswear')
-        self.menswear.save_category()
+        self.assertTrue(isinstance(self.category, Category))
 
-        self.nairobi = Location(photo_location='Nairobi')
-        self.nairobi.save_location()
+    def test_save_category(self):
+        self.category.save_category()
+        categories = Category.objects.all()
+        self.assertTrue(len(categories) > 0)
 
-        self.image = Image(title='Fashion', description='menswear', location=self.nairobi, category=self.menswear)
-        self.image.save_image()
-   def test_instance(self):
-       self.assertTrue(isinstance(self.image, Image))
+    def test_delete_category(self):
+        self.category.delete_category()
+        category = Category.objects.all()
+        self.assertTrue(len(category) == 0)
 
-   def test_save_method(self):
-       """
-       Function to test an image and its details is being saved
-       """
-       self.image.save_image()
-       images = Image.objects.all()
-       self.assertTrue(len(images) > 0)
+class TestLocation(TestCase):
+    def setUp(self):
+        self.location = Location(name='Kenya')
+        self.location.save_location()
 
-   def test_delete_method(self):
-       """
-       Function to test if an image can be deleted
-       """
-       self.image.save_image()
-       self.image.delete_image()
+    def test_instance(self):
+        self.assertTrue(isinstance(self.location, Location))
 
-   def test_update_method(self):
-       """
-       Function to test that an image's details can be updates
-       """
-       self.image.save_image()
-       new_image = Image.objects.filter(photo='image1.jpg').update(photo='download.jpg')
-       images = Image.objects.get(photo='download.jpg')
-       self.assertTrue(images.photo, 'download.jpg')
+    def test_save_location(self):
+        self.location.save_location()
+        locations = Location.get_locations()
+        self.assertTrue(len(locations) > 0)
 
-   def test_get_image_by_id(self):
-       """
-       Function to test if you can get an image by its id
-       """
-       self.image.save_image()
-       this_img= self.image.get_image_by_id(self.image.id)
-       image = Image.objects.get(id=self.image.id)
-       self.assertTrue(this_img, image)
+    def test_get_locations(self):
+        self.location.save_location()
+        locations = Location.get_locations()
+        self.assertTrue(len(locations) > 0)
 
-   def test_filter_by_location(self):
-       """
-       Function to test if you can get an image by its location
-       """
-       self.image.save_image()
-       this_img = self.image.filter_by_location(self.image.location_id)
-       image = Image.objects.filter(location=self.image.location_id)
-       self.assertTrue(this_img, image)
-
-   def test_filter_by_category_name(self):
-       """
-       Function to test if you can get an image by its category name
-       """
-       self.image.save_image()
-       images = Image.search_image('this')
-       self.assertTrue(len(images)>0)
-          
-
-# Create your tests here.
+    def test_delete_location(self):
+        self.location.delete_location()
+        location = Location.objects.all()
+        self.assertTrue(len(location) == 0)

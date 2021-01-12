@@ -1,38 +1,42 @@
 from django.shortcuts import render
-from django.http import HttpResponse, Http404# responsible for returning a response to a user
-import datetime as dt
-from .models import Image,Location,Photographer,Category
+from .models import Image,Category,Location
 
 # Create your views here.
 def welcome(request):
-    return render(request,'welcome.html')
+    return render( request ,'welcome.html')
 
-def category(request):
-    images = Image.objects.all()
-    return render(request, 'category.html',{'images':images})
 
-def search_results(request):
+def photos(request):
     
-    if 'image' in request.GET and request.GET["image"]:
-        search_term = request.GET.get("image")
-        searched_photos = Image.search_by_category(search_term)
+    images = Image.objects.all()
+    locations = Location.objects.all()
+    return render(request, 'photos.html',{'images': images[::-1], 'locations':locations})
+
+def search_image(request):
+    title = 'Search'
+    categories = Category.objects.all()
+    locations = Location.objects.all()
+    if 'image_category' in request.GET and request.GET['image_category']:
+        search_term = request.GET.get('image_category')
+        found_results = Image.search_by_category(search_term)
         message = f"{search_term}"
+        print(search_term)
+        print(found_results)
 
-        return render(request, 'all-photo/search.html',{"message":message,"photos": searched_photos})
-
+        return render(request, 'search.html',{'title':title,'images': found_results, 'message': message, 'categories': categories, "locations":locations})
     else:
-        message = "You haven't searched for any term"
-        return render(request, 'all-photo/search.html',{"message":message})  
+                
+        message = 'No searches yet'
+        return render(request, 'search.html',{"message": message})
 
-def image(request,image_id):
-    try:
-        image = Image.objects.get(id = image_id)
-    except DoesNotExist:
-        raise Http404()
-    return render(request,"all-photo/image.html", {"image":image})
-def filter_by_location(request,location_id):
-   """
-   Function that filters images by location
-   """
-   images = Image.filter_by_location(id=location_id )
-   return render (request, 'location.html', {"images":images})          
+
+def location_filter(request, image_location):
+    location = Location.get_location_id(image_location)
+    images = Image.filter_by_location(image_location)
+    title = f'{location} Photos'
+    return render(request, 'location.html', {'title':title,'images':images,'location':location})
+
+def image_location(request, location):
+    images = Image.filter_by_location(location)
+    print(images)
+    return render(request, 'location.html', {'location_images': images})
